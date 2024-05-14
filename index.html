@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RS CDT Calculator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 400px;
+            margin: 50px auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        label {
+            display: block;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        input[type="number"], input[type="submit"], input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+        .form-group:last-child input[type="text"] {
+            font-weight: bold;
+            color: #333;
+            background-color: #f0f0f0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2 style="text-align: center; margin-bottom: 30px;">RS CDT Calculator</h2>
+    <div class="form-group">
+        <label for="sales-target">Sales Target</label>
+        <input type="number" id="sales-target" name="sales-target" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="sales-achievement">Sales Achievement</label>
+        <input type="number" id="sales-achievement" name="sales-achievement" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="eco-target">Eco Target</label>
+        <input type="number" id="eco-target" name="eco-target" min="0" required>
+    </div>
+    <div class="form-group">
+        <label for="eco-achievement">Eco Achievement</label>
+        <input type="number" id="eco-achievement" name="eco-achievement" min="0" required>
+        <p style="font-size: 12px; color: #888;">Only above 900rs will be considered as Eco achievement</p>
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Calculate Payout">
+    </div>
+    <div class="form-group">
+        <label for="slab">Sales Slab (%)</label>
+        <input type="text" id="slab" name="slab" readonly>
+    </div>
+    <div class="form-group">
+        <label for="sales-payout">Sales Payout (%)</label>
+        <input type="text" id="sales-payout" name="sales-payout" readonly>
+    </div>
+    <div class="form-group">
+        <label for="eco-slab">Eco Slab (%)</label>
+        <input type="text" id="eco-slab" name="eco-slab" readonly>
+    </div>
+    <div class="form-group">
+        <label for="eco-payout">Eco Payout (%)</label>
+        <input type="text" id="eco-payout" name="eco-payout" readonly>
+    </div>
+    <div class="form-group" style="background-color: #f0f0f0; padding: 10px; border-radius: 3px;">
+        <label for="rs-cdt" style="color: #333;">RS CDT Payout (%)</label>
+        <input type="text" id="rs-cdt" name="rs-cdt" readonly>
+    </div>
+</div>
+
+<script>
+    document.querySelector('input[type="submit"]').addEventListener('click', function() {
+        var salesTarget = parseFloat(document.getElementById('sales-target').value);
+        var salesAchievement = parseFloat(document.getElementById('sales-achievement').value);
+        var ecoTarget = parseFloat(document.getElementById('eco-target').value);
+        var ecoAchievement = parseFloat(document.getElementById('eco-achievement').value);
+        
+        var salesSlab = (salesAchievement / salesTarget) * 100;
+        var ecoSlab = (ecoAchievement / ecoTarget) * 100;
+
+        var salesPayout = 0;
+        if (salesSlab >= 103) {
+            salesPayout = 0.15;
+        } else if (salesSlab >= 100) {
+            salesPayout = 0.10;
+        } else if (salesSlab >= 98) {
+            salesPayout = 0.05;
+        }
+
+        var ecoPayout = 0;
+        if (ecoSlab >= 100) {
+            ecoPayout = 0.10;
+        } else if (ecoSlab >= 95) {
+            ecoPayout = 0.075;
+        } else if (ecoSlab >= 90) {
+            ecoPayout = 0.05;
+        }
+
+        var rsCdtPayout = salesPayout + ecoPayout;
+
+        document.getElementById('slab').value = salesSlab.toFixed(2) + '%';
+        document.getElementById('sales-payout').value = (salesPayout).toFixed(2) + '%';
+        document.getElementById('eco-slab').value = ecoSlab.toFixed(2) + '%';
+        document.getElementById('eco-payout').value = (ecoPayout).toFixed(2) + '%';
+        document.getElementById('rs-cdt').value = (rsCdtPayout).toFixed(2) + '%';
+
+        // Set RS CDT Payout value
+        var rsCdtInput = document.getElementById('rs-cdt');
+        rsCdtInput.value = (rsCdtPayout).toFixed(2) + '%';
+
+        // Change background color based on value
+        if (rsCdtPayout >= 0.25) {
+            rsCdtInput.style.backgroundColor = '#4CAF50'; // Green
+        } else if (rsCdtPayout >= 0.17) {
+            rsCdtInput.style.backgroundColor = '#FFFFCC'; // Light Yellow
+        } else if (rsCdtPayout >= 0.10) {
+            rsCdtInput.style.backgroundColor = '#FFCCCC'; // Light Red
+        } else {
+            rsCdtInput.style.backgroundColor = '#8B0000'; // Dark Red
+        }
+    });
+</script>
+
+</body>
+</html>
